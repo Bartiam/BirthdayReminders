@@ -37,74 +37,80 @@ void coming_birthdays(const std::vector<std::string>& names, const std::vector<s
 	std::vector<std::string> printNames;
 	std::vector<std::tm> printBirthdays;
 
-	for (int i = 1; i < birthdays.size(); ++i)
+	if (birthdays.size() == 1)
 	{
-		if (currentDate.tm_mon <= birthdays[i].tm_mon)
+		if (currentDate.tm_mon <= birthdays[0].tm_mon)
+			add_name_birthday_to_print(printNames, printBirthdays, names[0], birthdays[0]);
+	}
+	else 
+		for (int i = 1; i < birthdays.size(); ++i)
 		{
-			if (birthdays[i].tm_mon < nearestBirthday.tm_mon)
+			if (currentDate.tm_mon <= birthdays[i].tm_mon)
 			{
-				nameIt = i;
-				nameNearestBirthday = names[i];
-				nearestBirthday = birthdays[i];
-				add_name_birthday_to_print(printNames, printBirthdays, names[i], nearestBirthday);
-				isTrue = true;
-			}
-			else if (currentDate.tm_mon > nearestBirthday.tm_mon)
-			{
-				nameIt = i;
-				nameNearestBirthday = names[i];
-				nearestBirthday = birthdays[i];
-				add_name_birthday_to_print(printNames, printBirthdays, names[i], nearestBirthday);
-				isTrue = true;
-			}
-			else if (nearestBirthday.tm_mon == birthdays[i].tm_mon)
-			{
-				if (currentDate.tm_mday <= birthdays[i].tm_mday)
+				if (birthdays[i].tm_mon < nearestBirthday.tm_mon)
 				{
-					if (birthdays[i].tm_mday < nearestBirthday.tm_mday)
+					nameIt = i;
+					nameNearestBirthday = names[i];
+					nearestBirthday = birthdays[i];
+					add_name_birthday_to_print(printNames, printBirthdays, names[i], nearestBirthday);
+					isTrue = true;
+				}
+				else if (currentDate.tm_mon > nearestBirthday.tm_mon)
+				{
+					nameIt = i;
+					nameNearestBirthday = names[i];
+					nearestBirthday = birthdays[i];
+					add_name_birthday_to_print(printNames, printBirthdays, names[i], nearestBirthday);
+					isTrue = true;
+				}
+				else if (nearestBirthday.tm_mon == birthdays[i].tm_mon)
+				{
+					if (currentDate.tm_mday <= birthdays[i].tm_mday)
 					{
-						nameIt = i;
-						nameNearestBirthday = names[i];
-						nearestBirthday = birthdays[i];
-						add_name_birthday_to_print(printNames, printBirthdays, names[i], nearestBirthday);
-						isTrue = true;
-					}
-					else if (birthdays[i].tm_mday == nearestBirthday.tm_mday)
-					{
-						if (printNames.empty())
+						if (birthdays[i].tm_mday < nearestBirthday.tm_mday)
 						{
-							printNames.push_back(names[i]);
-							printBirthdays.push_back(birthdays[i]);
-							printNames.push_back(names[nameIt]);
-							printBirthdays.push_back(nearestBirthday);
+							nameIt = i;
+							nameNearestBirthday = names[i];
+							nearestBirthday = birthdays[i];
+							add_name_birthday_to_print(printNames, printBirthdays, names[i], nearestBirthday);
+							isTrue = true;
 						}
-						else
+						else if (birthdays[i].tm_mday == nearestBirthday.tm_mday)
 						{
-							if (isTrue)
-							{
-								printNames.clear();
-								printBirthdays.clear();
-								isTrue = false;
-							}
-							if (!printNames.empty())
-							{
-								printNames.push_back(names[i]);
-								printBirthdays.push_back(birthdays[i]);
-							}
-							else
+							if (printNames.empty())
 							{
 								printNames.push_back(names[i]);
 								printBirthdays.push_back(birthdays[i]);
 								printNames.push_back(names[nameIt]);
 								printBirthdays.push_back(nearestBirthday);
 							}
+							else
+							{
+								if (isTrue)
+								{
+									printNames.clear();
+									printBirthdays.clear();
+									isTrue = false;
+								}
+								if (!printNames.empty())
+								{
+									printNames.push_back(names[i]);
+									printBirthdays.push_back(birthdays[i]);
+								}
+								else
+								{
+									printNames.push_back(names[i]);
+									printBirthdays.push_back(birthdays[i]);
+									printNames.push_back(names[nameIt]);
+									printBirthdays.push_back(nearestBirthday);
+								}
+							}
 						}
 					}
 				}
-			}
 
+			}
 		}
-	}
 
 	system("cls");
 	std::cout << "Nearest birthday: " << std::endl;
@@ -206,6 +212,11 @@ int main()
 
 		if (name == "End" || name == "end")
 		{
+			if (birthdays.empty())
+			{
+				std::cerr << "No records. " << std::endl;
+				return 0;
+			}
 			coming_birthdays(names, birthdays);
 			return 0;
 		}
